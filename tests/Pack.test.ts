@@ -121,3 +121,39 @@ test('pack will pack undefined array items that are properly annotated', () => {
 
   expect(packed).toMatchObject([[['John'], ['Paul'], undefined, ['Ringo']]])
 })
+
+test('beatles', () => {
+  class Member {
+    @indexAt(0) name:string
+    @indexAt(1) age:number
+    @indexAt(2, []) instruments:string[]
+
+    constructor(name:string, age:number, ...instruments:string[]) {
+      this.name = name
+      this.age = age
+      this.instruments = instruments
+    }
+  }
+
+  class Band {
+    @indexAt(0) name:string
+    @indexAt(1, [Member]) members:Member[]
+
+    constructor(name:string, ...members:Member[]) {
+      this.name = name
+      this.members = members
+    }
+  }
+
+  const beatles = new Band('Beatles',
+    new Member('John',   29, 'vocals', 'guitar'),
+    new Member('Paul',   27, 'vocals', 'guitar'),
+    new Member('George', 26, 'vocals', 'bass'),
+    new Member('Ringo',  29, 'drums'),
+  )
+
+  const packed = Unspoken.pack(Band, beatles)
+  const unpacked = Unspoken.unpack(Band, packed)
+
+  expect(unpacked).toMatchObject(beatles)
+})

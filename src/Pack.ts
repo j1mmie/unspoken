@@ -1,6 +1,6 @@
 import { getIndexingMetas, IndexAtMeta, Newable } from './Meta'
 
-type PackedArray = (any[] | undefined)
+export type PackedArray = (any[] | undefined)
 
 function _packArray<T extends object>(rootCtor:Newable<T>, arr:T[], parentMeta?:IndexAtMeta,):any[] {
   if (!arr.length) return []
@@ -16,8 +16,10 @@ function _packProperty<T extends object>(rootCtor:Newable<T>, indexMeta:IndexAtM
   if (value === undefined) {
     return undefined
   } else if (Array.isArray(value)) {
-    if (indexMeta.isArray && indexMeta.typeHint) {
+    if (indexMeta.isArray && indexMeta.typeHint !== undefined) {
       return _packArray(indexMeta.typeHint, value, indexMeta)
+    } else if (indexMeta.isArray && indexMeta.typeHint === undefined) {
+      return value
     } else {
       throw new Error(`Unspoken: In '${rootCtor.name}', property value for '${indexMeta.propertyKey}' is an array, but indexAt typeHint was not specified as an array '(indexAt(0, [MyClass]))'.`)
     }
@@ -28,7 +30,7 @@ function _packProperty<T extends object>(rootCtor:Newable<T>, indexMeta:IndexAtM
   }
 }
 
-function _packObject<T>(rootCtor:Newable<T>, obj:T, cachedMetas?:IndexAtMeta[], parentPropMeta?:IndexAtMeta):PackedArray {
+function _packObject<T>(rootCtor:Newable<T>, obj:(T | number[] | string[] | boolean[]), cachedMetas?:IndexAtMeta[], parentPropMeta?:IndexAtMeta):PackedArray {
   if (obj === undefined) return undefined
 
   const presentObj = obj as unknown as object

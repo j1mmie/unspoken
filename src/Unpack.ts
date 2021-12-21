@@ -1,4 +1,5 @@
 import { getIndexingMetas, IndexAtMeta, Newable } from './Meta'
+import { PackedArray } from './Pack'
 
 function _unpackProp<T>(rootCtor:Newable<T>, indexMeta:IndexAtMeta, value:any):any {
   if (indexMeta.isArray && indexMeta.typeHint) {
@@ -10,7 +11,7 @@ function _unpackProp<T>(rootCtor:Newable<T>, indexMeta:IndexAtMeta, value:any):a
   }
 }
 
-function _unpackArray<T>(rootCtor:Newable<T>, currentCtor:Newable<T>, array:(any[] | null)):(T | undefined) {
+function _unpackArray<T>(rootCtor:Newable<T>, currentCtor:Newable<T>, array:(any[] | null | PackedArray)):(T | undefined) {
   if (array === null) return undefined
 
   if (!Array.isArray(array)) {
@@ -28,7 +29,7 @@ function _unpackArray<T>(rootCtor:Newable<T>, currentCtor:Newable<T>, array:(any
   return target as T
 }
 
-export function unpack<T>(rootCtor:Newable<T>, array:(any[] | null)):(T | undefined) {
+export function unpack<T>(rootCtor:Newable<T>, array:(any[] | null | PackedArray)):(T | undefined) {
   return _unpackArray(rootCtor, rootCtor, array)
 }
 
