@@ -1,2 +1,4 @@
 # unspoken
 Object to array de/serializer, using decorators to define contracts
+
+![Branches Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/j1mmie/17ea5fefe3b3fc7fe430382821173e13/raw/unspoken-main_branches.json) ![Lines Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/j1mmie/17ea5fefe3b3fc7fe430382821173e13/raw/unspoken-main_lines.json) ![Functions Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/j1mmie/17ea5fefe3b3fc7fe430382821173e13/raw/unspoken-main_functions.json) ![Statements Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/j1mmie/17ea5fefe3b3fc7fe430382821173e13/raw/unspoken-main_statements.json)

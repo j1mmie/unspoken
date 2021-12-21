@@ -1,0 +1,117 @@
+name: Run Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: Run tests, output coverage
+      run: |
+        npm ci
+        npm run test:coverage
+
+    - name: Read coverage output
+      id: coverage
+      run: |
+        json_output () {
+          PERCENT=$(jq ".total.$1.pct" coverage/coverage-summary.json)
+          echo "##[set-output name=$1;]$PERCENT"
+
+          if [ $PERCENT -lt 85 ]; then
+            COLOR=red
+          elif [ $PERCENT -lt 90 ]; then
+            COLOR=orange
+          elif [ $PERCENT -lt 95 ]; then
+            COLOR=yellow
+          else
+            COLOR=green
+          fi
+
+          echo "##[set-output name=$1_color;]$COLOR"
+        }
+
+        json_output lines
+        json_output statements
+        json_output functions
+        json_output branches
+
+    - name: Extract branch name
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract_branch
+
+    - name: Debug output
+      run: |
+        echo lines      = ${{ steps.coverage.outputs.lines }}
+        echo statements = ${{ steps.coverage.outputs.statements }}
+        echo functions  = ${{ steps.coverage.outputs.functions }}
+        echo branches   = ${{ steps.coverage.outputs.branches }}
+
+        echo lines_color      = ${{ steps.coverage.outputs.lines_color }}
+        echo statements_color = ${{ steps.coverage.outputs.statements_color }}
+        echo functions_color  = ${{ steps.coverage.outputs.functions_color }}
+        echo branches_color   = ${{ steps.coverage.outputs.branches_color }}
+
+        echo branch = ${{ steps.extract_branch.outputs.branch }}
+
+    - name: 'Coverage Badge: Lines'
+      uses: schneegans/dynamic-badges-action@v1.1.0
+      with:
+        auth: ${{ secrets.GIST_TOKEN }}
+        gistID: 17ea5fefe3b3fc7fe430382821173e13
+        filename: unspoken-${{ steps.extract_branch.outputs.branch }}_lines.json
+        label: 'Lines'
+        message: ${{ steps.coverage.outputs.lines }}%
+        color: ${{ steps.coverage.outputs.lines_color }}
+        namedLogo: jest
+
+    - name: 'Coverage Badge: Statements'
+      uses: schneegans/dynamic-badges-action@v1.1.0
+      with:
+        auth: ${{ secrets.GIST_TOKEN }}
+        gistID: 17ea5fefe3b3fc7fe430382821173e13
+        filename: unspoken-${{ steps.extract_branch.outputs.branch }}_statements.json
+        label: 'Statements'
+        message: ${{ steps.coverage.outputs.statements }}%
+        color: ${{ steps.coverage.outputs.statements_color }}
+        namedLogo: jest
+
+    - name: 'Coverage Badge: Functions'
+      uses: schneegans/dynamic-badges-action@v1.1.0
+      with:
+        auth: ${{ secrets.GIST_TOKEN }}
+        gistID: 17ea5fefe3b3fc7fe430382821173e13
+        filename: unspoken-${{ steps.extract_branch.outputs.branch }}_functions.json
+        label: 'Functions'
+        message: ${{ steps.coverage.outputs.functions }}%
+        color: ${{ steps.coverage.outputs.functions_color }}
+        namedLogo: jest
+
+    - name: 'Coverage Badge: Branches'
+      uses: schneegans/dynamic-badges-action@v1.1.0
+      with:
+        auth: ${{ secrets.GIST_TOKEN }}
+        gistID: 17ea5fefe3b3fc7fe430382821173e13
+        filename: unspoken-${{ steps.extract_branch.outputs.branch }}_branches.json
+        label: 'Branches'
+        message: ${{ steps.coverage.outputs.branches }}%
+        color: ${{ steps.coverage.outputs.branches_color }}
+        namedLogo: jest
