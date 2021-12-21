@@ -1,7 +1,7 @@
 import { Unspoken, indexAt } from '../src'
 import * as TestClasses from './utils/TestClasses.test'
 
-test.only('pack simple object', () => {
+test('pack simple object', () => {
   const obj = new TestClasses.ClassSimple('Paul')
   const packed = Unspoken.pack(TestClasses.ClassSimple, obj)
 
