@@ -25,3 +25,17 @@ jobs:
         npm ci
         npm run test:coverage
         npm run test:badges
+    - run: |
+        json_get () {
+          echo $(jq ".total.$1.pct" coverage/coverage-summary.json)
+        }
+
+        COVERAGE_LINES=`json_get lines`
+        COVERAGE_STATEMENTS=`json_get statements`
+        COVERAGE_FUNCTIONS=`json_get functions`
+        COVERAGE_BRANCHES=`json_get branches`
+
+        echo "COVERAGE_LINES      = $COVERAGE_LINES"
+        echo "COVERAGE_STATEMENTS = $COVERAGE_STATEMENTS"
+        echo "COVERAGE_FUNCTIONS  = $COVERAGE_FUNCTIONS"
+        echo "COVERAGE_BRANCHES   = $COVERAGE_BRANCHES"
