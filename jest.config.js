@@ -2,7 +2,11 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  collectCoverage: true,
   coverageDirectory: 'coverage',
   testPathIgnorePatterns: ['tests/utils'],
+  coverageReporters: [
+    'json-summary',
+    'text',
+    'lcov'
+  ]
 }

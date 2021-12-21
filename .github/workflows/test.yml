@@ -23,4 +23,5 @@ jobs:
         cache: 'npm'
     - run: |
         npm ci
-        npm test
+        npm test:coverage
+        npm test:badges
