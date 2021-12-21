@@ -21,11 +21,13 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: |
+    - name: Run tests, output coverage
+      run: |
         npm ci
         npm run test:coverage
         npm run test:badges
-    - run: |
+    - name: Read coverage output
+      run: |
         json_get () {
           echo $(jq ".total.$1.pct" coverage/coverage-summary.json)
         }
@@ -34,8 +36,17 @@ jobs:
         COVERAGE_STATEMENTS=`json_get statements`
         COVERAGE_FUNCTIONS=`json_get functions`
         COVERAGE_BRANCHES=`json_get branches`
-
-        echo "COVERAGE_LINES      = $COVERAGE_LINES"
-        echo "COVERAGE_STATEMENTS = $COVERAGE_STATEMENTS"
-        echo "COVERAGE_FUNCTIONS  = $COVERAGE_FUNCTIONS"
-        echo "COVERAGE_BRANCHES   = $COVERAGE_BRANCHES"
+    - name: Extract branch name
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract_branch
+    - name: Create the Badge
+      uses: schneegans/dynamic-badges-action@v1.1.0
+      with:
+        auth: ${{ secrets.GIST_TOKEN }}
+        gistID: 17ea5fefe3b3fc7fe430382821173e13
+        filename: unspoken-${{ steps.extract_branch.outputs.branch }}.json
+        label: Test Coverage
+        message: ${{ env.COVERAGE }}
+        color: green
+        namedLogo: jest
