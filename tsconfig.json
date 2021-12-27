@@ -3,11 +3,12 @@
     "target": "es2021",
     "module": "commonjs",
     "lib": ["ES2021", "DOM"],
-    "outDir": "dist",
+    "outDir": "./dist",
     "sourceMap": true,
     "strict": true,
     "noImplicitOverride": true,
     "esModuleInterop": true,
+    "declaration": true,
 
     /* Experimental Options */
     "experimentalDecorators": true,
@@ -16,5 +17,8 @@
     /* Advanced Options */
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
-  }
+  },
+  "include": [
+    "src/**/*"
+  ]
 }
