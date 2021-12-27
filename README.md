@@ -46,7 +46,7 @@ npm install --save-dev unspoken
 ### Importing
 The 2 most common imports are:
 
-```
+```typescript
 import { Unspoken, indexAt } from 'unspoken'
 ```
 
@@ -56,7 +56,9 @@ import { Unspoken, indexAt } from 'unspoken'
 
 ##### indexAt Usage
 
-`@indexAt(index, typeHint) name:type`
+```typescript
+@indexAt(index, typeHint) name:type
+```
 
 where:
 
@@ -70,7 +72,7 @@ where:
 
 ##### Examples
 
-```
+```typescript
 class Parent {
   @indexAt(0) name:string
   @indexAt(1) age:number
@@ -86,7 +88,7 @@ On Type hints: It's unfortunate, but Typescript's current reflection capabilitie
 
 On decorators: Decorators are convenient for annotation, but one drawback is that they cannot be used in constructor arguments. For example, this does not work:
 
-```
+```typescript
 class Demo {
   constructor(
     @indexAt(0) public age:number // DOES NOT WORK
@@ -100,7 +102,7 @@ So often an Unspoken object requires both a declaration section as well as a con
 
 It's as simple as:
 
-```
+```typescript
 const array = Unspoken.pack(TypeOfObject, object)
 ```
 
@@ -108,7 +110,7 @@ const array = Unspoken.pack(TypeOfObject, object)
 
 Likewise, you can unpack an array back to the Type of object from whence it came. But you must know the Type before hand. For example:
 
-```
+```typescript
 const object = Unspoken.unpack(TypeOfObject, array)
 ```
 
