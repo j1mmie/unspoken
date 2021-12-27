@@ -1,4 +1,7 @@
 {
+  "dependencies": {
+    "reflect-metadata": "^0.1.13"
+  },
   "devDependencies": {
     "@msgpack/msgpack": "^2.7.1",
     "@types/jest": "^27.0.3",
@@ -9,7 +12,6 @@
     "import": "^0.0.6",
     "jest": "^27.4.5",
     "node-gzip": "^1.1.2",
-    "reflect-metadata": "^0.1.13",
     "ts-jest": "^27.1.2",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.4"
@@ -21,7 +23,7 @@
   },
   "name": "unspoken",
   "description": "Convert objects to arrays, removing keys and extraneous structure. Rebuild objects from arrays if you know their schema.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "src/index.js",
   "directories": {
     "test": "tests"
