@@ -155,5 +155,4 @@ console.log(`packed: ${JSON.stringify(packed)}`)
 
 const unpacked = Unspoken.unpack(Band, packed)
 console.log(`unpacked: ${unpacked}`)
-
 ```

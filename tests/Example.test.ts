@@ -1,6 +1,6 @@
 import { Unspoken, indexAt } from '../src'
 import * as MsgPack from '@msgpack/msgpack'
-import { gzip, ungzip } from 'node-gzip'
+import { gzip } from 'node-gzip'
 
 test('Example', async () => {
   class Member {
