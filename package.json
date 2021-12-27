@@ -1,10 +1,14 @@
 {
   "devDependencies": {
+    "@msgpack/msgpack": "^2.7.1",
     "@types/jest": "^27.0.3",
+    "@types/node-gzip": "^1.1.0",
     "@typescript-eslint/eslint-plugin": "^5.7.0",
     "@typescript-eslint/parser": "^5.7.0",
     "eslint": "^8.4.1",
+    "import": "^0.0.6",
     "jest": "^27.4.5",
+    "node-gzip": "^1.1.2",
     "reflect-metadata": "^0.1.13",
     "ts-jest": "^27.1.2",
     "ts-node": "^10.4.0",
@@ -14,5 +18,37 @@
     "build": "tsc",
     "test": "jest",
     "test:coverage": "jest --coverage"
-  }
+  },
+  "name": "unspoken",
+  "description": "Convert objects to arrays, removing keys and extraneous structure. Rebuild objects from arrays if you know their schema.",
+  "version": "0.1.0",
+  "main": "src/index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/j1mmie/unspoken.git"
+  },
+  "keywords": [
+    "serialize",
+    "object",
+    "array",
+    "object-to-array",
+    "arrayify",
+    "schema",
+    "contract",
+    "messagepack",
+    "msgpack",
+    "deserialize",
+    "compress",
+    "decompress",
+    "uncompress"
+  ],
+  "author": "Jimmie Tyrrell",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/j1mmie/unspoken/issues"
+  },
+  "homepage": "https://github.com/j1mmie/unspoken#readme"
 }
