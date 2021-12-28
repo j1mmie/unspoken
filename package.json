@@ -23,7 +23,7 @@
   },
   "name": "unspoken",
   "description": "Compress a keyed object to a keyless array. Rebuild the original object from array-form if you know (or can assume) what it's original Type was.",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "directories": {

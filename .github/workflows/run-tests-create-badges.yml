@@ -35,14 +35,16 @@ jobs:
           PERCENT=$(jq ".total.$1.pct" coverage/coverage-summary.json)
           echo "##[set-output name=$1;]$PERCENT"
 
-          if [ $PERCENT -lt 85 ]; then
+          if [ $PERCENT -lt 80 ]; then
             COLOR=red
-          elif [ $PERCENT -lt 90 ]; then
+          elif [ $PERCENT -lt 85 ]; then
             COLOR=orange
-          elif [ $PERCENT -lt 95 ]; then
+          elif [ $PERCENT -lt 90 ]; then
             COLOR=yellow
-          else
+          elif [ $PERCENT -lt 95 ]; then
             COLOR=green
+          else
+            COLOR=lightgreen
           fi
 
           echo "##[set-output name=$1_color;]$COLOR"

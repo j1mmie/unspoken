@@ -2,10 +2,6 @@
   "compilerOptions": {
     "target": "es2021",
     "module": "commonjs",
-    "lib": ["ES2021", "DOM"],
-    "sourceRoot": "./src",
-    "outDir": "./dist",
-    "sourceMap": true,
     "strict": true,
     "noImplicitOverride": true,
     "esModuleInterop": true,
@@ -17,11 +13,6 @@
 
     /* Advanced Options */
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
-  },
-  "exclude": [
-    "node_modules",
-    "dist",
-    "tests"
-  ]
+    "forceConsistentCasingInFileNames": true,
+  }
 }
