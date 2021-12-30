@@ -16,6 +16,27 @@ Unspoken is designed to be used with other compression passes, like [MessagePack
 
 ![Branches Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/j1mmie/17ea5fefe3b3fc7fe430382821173e13/raw/unspoken-main_branches.json) ![Lines Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/j1mmie/17ea5fefe3b3fc7fe430382821173e13/raw/unspoken-main_lines.json) ![Functions Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/j1mmie/17ea5fefe3b3fc7fe430382821173e13/raw/unspoken-main_functions.json) ![Statements Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/j1mmie/17ea5fefe3b3fc7fe430382821173e13/raw/unspoken-main_statements.json)
 
+## Table of Contents
+
+- [More Info](#more-info)
+  + [Compression results](#compression-results)
+  + [Compatibility with MessagePack](#compatibility-with-messagepack)
+- [Installation](#installation)
+- [Usage](#usage)
+  + [Importing](#importing)
+  + [Defining a schema](#defining-a-schema)
+    - [indexAt](#indexat)
+      * [indexAt Usage](#indexat-usage)
+      * [Examples](#examples)
+      * [Notes](#notes)
+  + [Packing](#packing)
+  + [Unpacking](#unpacking)
+  + [Partial Contracts](#partial-contracts)
+- [Quick Reference Example](#quick-reference-example)
+
+
+## More Info
+
 ### Compression results
 
 We'll use the 257 byte object in [tests/Example.test.ts](tests/Example.test.ts)
@@ -37,13 +58,13 @@ Unspoken works particularly well with [MessagePack](https://github.com/msgpack).
 
 Unspoken works perfectly with the [C# MessagePack library](https://github.com/neuecc/MessagePack-CSharp)'s default "indexed keys" mode, and uses a similar decorator-based API. You can communicate between C# and Typescript/Javascript so long as both sender and receiver define their contracts the same way.
 
-## Install
+## Installation
 
 ```bash
 npm install --save-dev unspoken
 ```
 
-## How to use
+## Usage
 
 1. Define schema contract using decorators
 2. Pack the data into an array
