@@ -22,7 +22,7 @@
     "test:coverage": "jest --coverage"
   },
   "name": "unspoken",
-  "description": "Compress a keyed object to a keyless array. Rebuild the original object from array-form if you know (or can assume) what it's original Type was.",
+  "description": "Pack network messages more efficiently. Compress keyed objects into keyless arrays. Decompress arrays back into usable objects.",
   "version": "0.1.4",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -46,7 +46,11 @@
     "deserialize",
     "compress",
     "decompress",
-    "uncompress"
+    "uncompress",
+    "network",
+    "game",
+    "socket",
+    "server"
   ],
   "author": "Jimmie Tyrrell",
   "license": "MIT",

@@ -43,14 +43,42 @@ test('unpackIndex unpacks a specific item from an array', () => {
   expect(unpacked).toMatchObject(expected)
 })
 
-test('unpack throws when field annotated as array is not actually an array', () => {
-  class BrokenClass {
-    @indexAt(0, [TestClasses.ClassWithChild]) child:TestClasses.ClassSimple
+test('unpack a subclass based on a hint', () => {
+  class Request {
+    @indexAt(0) method:string
 
-    constructor(child:TestClasses.ClassSimple) {
-      this.child = child
+    constructor(method:string) {
+      this.method = method
     }
   }
+
+  class LoginRequest extends Request {
+    @indexAt(1) userName:string
+    @indexAt(2) password:string
+
+    constructor(userName:string, password:string) {
+      super('login')
+      this.userName = userName
+      this.password = password
+    }
+  }
+
+  const request = new LoginRequest('jimmie', 'hunter2')
+  const packedRequest = Unspoken.pack(LoginRequest, request)
+
+  const hint = Unspoken.unpack(Request, packedRequest)
+  if (!hint) throw 'Unable to unpack hint '
+
+  expect(hint.method).toBe('login')
+  const unpackedRequest = Unspoken.unpack(LoginRequest, packedRequest)
+  if (!unpackedRequest) throw 'Unable to unpack final object'
+
+  expect(unpackedRequest.method).toBe('login')
+  expect(unpackedRequest.userName).toBe('jimmie')
+  expect(unpackedRequest.password).toBe('hunter2')
+})
+
+test('unpack throws when field annotated as array is not actually an array', () => {
   expect(() => {
     Unspoken.unpack(TestClasses.ClassWithArray, [['Jimmie']])
   }).toThrow()

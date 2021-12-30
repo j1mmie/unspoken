@@ -1,8 +1,12 @@
 # unspoken
 
-Compress a keyed object to a keyless array. Rebuild the original object from array-form if you know (or can assume) what it's original Type was.
+Pack network messages more efficiently. Compress keyed objects into keyless arrays. Decompress arrays back into usable objects.
 
-This library is particularly useful when serializing objects for network transmission. A naive approach would include the schema of the object along with the data (i.e., JSON). But if the recipient already expects some schema, then let that remain an unspoken agreement, and just send the important stuff.
+Unspoken makes MessagePack more efficient than Protobufs, and it's easier to use. No compilers or generated code required.
+
+It's particularly useful when de/serializing data for quick network messages, like in multiplayer games and other socket-server applications.
+
+A naïve client + server would communicate using whole JSON objects, including keys. The keys provide context, essentially sending the "schema", or "contract", over the wire too. But if the recipient already knows the context, then let it remain an unspoken agreement, and just send the important stuff.
 
 This is the opposite of a "contractless" approach. A contractless serializer would transmit schema over the wire.
 
@@ -14,21 +18,22 @@ Unspoken is designed to be used with other compression passes, like [MessagePack
 
 We'll use the 257 byte object in [tests/Example.test.ts](tests/Example.test.ts)
 
-| Process            | Compressed Bytes | Ratio  |
-|--------------------|------------------|--------|
-| JSON               | 257              | 100%   |
-| MsgPack            | 188              | 73.1%  |
-| Gzip               | 138              | 53.7%  |
-| Unspoken           | 132              | 51.3%  |
-| Unspoken + MsgPack | 91               | 35.4%  |
+| Process                  | Compressed Bytes | Ratio  |
+|--------------------------|------------------|--------|
+| JSON                     | 257              | 100%   |
+| MessagePack              | 188              | 73.1%  |
+| Gzip                     | 138              | 53.7%  |
+| Unspoken                 | 132              | 51.3%  |
+| Protobufs                | 105              | 40.8%  |
+| Unspoken & MessagePack ❤️ | 91               | 35.4%  |
 
 Larger objects with fewer strings will have more dramatic compression results.
 
-### More info
+### Compatibility with MessagePack
 
-Unspoken works particularly nice with [MessagePack](https://github.com/msgpack). You can pack an object into an array and then use MessagePack to compress it. On the receiving end, you can decompress it and then unpack it to get it back to it's original, usable form.
+Unspoken works particularly well with [MessagePack](https://github.com/msgpack). You can pack an object into an array and then use MessagePack to compress it. On the receiving end, you can decompress it and then unpack it to get it back to it's original, usable form.
 
-Unspoken works perfectly with the [C# MessagePack library](https://github.com/neuecc/MessagePack-CSharp)'s default "indexed keys" mode. You can communicate between C# and Typescript/Javascript so long as both sender and receiver define their contract the same way.
+Unspoken works perfectly with the [C# MessagePack library](https://github.com/neuecc/MessagePack-CSharp)'s default "indexed keys" mode, and uses a similar decorator-based API. You can communicate between C# and Typescript/Javascript so long as both sender and receiver define their contracts the same way.
 
 ## Install
 
@@ -84,9 +89,24 @@ class Parent {
 
 ##### Notes
 
-On Type hints: It's unfortunate, but Typescript's current reflection capabilities make them a requirement. It is impossible to determine the type of a property at runtime, and so it's constructor must be passed in somewhere. Hence the hints.
+- Unspoken classes may extend other Unspoken classes, so long as they don't define the same index numbers.
+ i.e., The following is valid
 
-On decorators: Decorators are convenient for annotation, but one drawback is that they cannot be used in constructor arguments. For example, this does not work:
+  ```typescript
+  class SuperClass {
+    @indexAt(0) method:string
+  }
+
+  class SubClass extends SuperClass {
+    @indexAt(1) data:string
+  }
+  ```
+
+  See the section titled [Partial Contracts](#Partial_Contracts) for an example using this type of structure.
+
+- On Type hints: It's unfortunate, but Typescript's current reflection capabilities make them a requirement. It is impossible to determine the type of a property at runtime, and so it's constructor must be passed in somewhere. It's redundant and I will explore approaches to removing this from the API in the future.
+
+- On decorators: Decorators are convenient for annotation, but one drawback is that they cannot be used in constructor arguments. For example, this does not work:
 
 ```typescript
 class Demo {
@@ -114,11 +134,80 @@ Likewise, you can unpack an array back to the Type of object from whence it came
 const object = Unspoken.unpack(TypeOfObject, array)
 ```
 
+### Partial Contracts
+or,
 
-## Example
+**What if I don't know the original object's Type?**
+
+Sometimes the recipient may not know what type of packed data was sent. For example, if the content of the transmission is a subclass of some wrapper.
+
+Take the following example, which defines a base class `Request`, and two subclasses: `LoginRequest` and `ChangePasswordRequest`.
+
+```typescript
+class Request {
+  @indexAt(0) method:string
+
+  constructor(method:string) {
+    this.method = method
+  }
+}
+
+class LoginRequest extends Request {
+  @indexAt(1) userName:string
+  @indexAt(2) password:string
+
+  constructor(userName:string, password:string) {
+    super('login')
+    this.userName = userName
+    this.password = password
+  }
+}
+
+class ChangePasswordRequest extends Request {
+  @indexAt(1) newPassword:string
+
+  constructor(newPassword:string) {
+    super('changePassword')
+    this.newPassword = newPassword
+  }
+}
+```
+
+Instead of attempting to fully unpack the array-forms of these objects, Unspoken can partially unpack them in order to glean more info. If we give Unspoken the `Request` constructor as a Type hint, it will only unpack the information available in *that* class's definition. In this example, that's nothing but the `method` instance variable.
+
+Let's create a new Request and send it to a recipient. On the receiving end, they'll detect what kind of request it is, then unpack it completely.
+
+```typescript
+const request = new LoginRequest('jimmie', 'hunter2')
+const packedRequest = Unspoken.pack(LoginRequest, request)
+
+// packedRequest == ['login', 'jimmie', 'hunter2']
+// Pretend we send it over the network. It gets received by another client below:
+
+const partial = Unspoken.unpack(Request, packedRequest)
+if (!partial) throw 'An error occured while parsing a request.'
+
+switch (partial.method) {
+  case 'login':
+    const loginRequest = Unspoken.unpack(LoginRequest, packedRequest)
+    handleLogin(loginRequest)
+    break
+  case 'changePassword':
+    const changePasswordRequest = Unspoken.unpack(ChangePasswordRequest, packedRequest)
+    handleChangePassword(changePasswordRequest)
+    break
+  default:
+    console.log('Unknown request method received')
+    break
+}
+```
+
+Now the handler methods, `handleLogin` and `handleChangePassword`, will execute only when their associated method has been requested, and they'll receive the appropriate input.
+
+
+## Quick Reference Example
 
 (Taken from [tests/Example.test.ts](tests/Example.test.ts))
-
 
 ```typescript
 import { Unspoken, indexAt } from 'unspoken'
