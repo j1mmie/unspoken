@@ -1,5 +1,7 @@
 # unspoken
 
+![image](https://user-images.githubusercontent.com/4650220/147728047-cb6e9268-0fe1-490b-8030-f1a53b8ec33d.png)
+
 Pack network messages more efficiently. Compress keyed objects into keyless arrays. Decompress arrays back into usable objects.
 
 Unspoken makes MessagePack more efficient than Protobufs, and it's easier to use. No compilers or generated code required.
@@ -102,7 +104,7 @@ class Parent {
   }
   ```
 
-  See the section titled [Partial Contracts](#Partial_Contracts) for an example using this type of structure.
+  See the section titled [Partial Contracts](#partial-contracts) for an example using this type of structure.
 
 - On Type hints: It's unfortunate, but Typescript's current reflection capabilities make them a requirement. It is impossible to determine the type of a property at runtime, and so it's constructor must be passed in somewhere. It's redundant and I will explore approaches to removing this from the API in the future.
 
@@ -135,9 +137,7 @@ const object = Unspoken.unpack(TypeOfObject, array)
 ```
 
 ### Partial Contracts
-or,
-
-**What if I don't know the original object's Type?**
+or, **What if I don't know the original object's Type?**
 
 Sometimes the recipient may not know what type of packed data was sent. For example, if the content of the transmission is a subclass of some wrapper.
 
