@@ -1,6 +1,6 @@
 # unspoken
 
-![image](https://user-images.githubusercontent.com/4650220/147728047-cb6e9268-0fe1-490b-8030-f1a53b8ec33d.png)
+![image](https://user-images.githubusercontent.com/4650220/148303626-d1e525c7-6305-4438-82a7-9e9489b1664c.png)
 
 Pack network messages more efficiently. Compress keyed objects into keyless arrays. Decompress arrays back into usable objects.
 
