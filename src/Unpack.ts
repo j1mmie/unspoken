@@ -1,7 +1,7 @@
-import { getIndexingMetas, IndexAtMeta, Newable } from './Meta'
+import { getIndexingMetas, PropertyMeta, Newable } from './Meta'
 import { PackedArray } from './Pack'
 
-function _unpackProp<T>(rootCtor:Newable<T>, indexMeta:IndexAtMeta, value:any):any {
+function _unpackProp<T>(rootCtor:Newable<T>, indexMeta:PropertyMeta, value:any):any {
   if (indexMeta.isArray && indexMeta.typeHint) {
     return value.map((_:any) => unpack(indexMeta.typeHint!, _))
   } else if (indexMeta.typeHint) {

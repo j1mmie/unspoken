@@ -32,7 +32,8 @@ jobs:
       id: coverage
       run: |
         json_output () {
-          PERCENT=$(jq ".total.$1.pct" coverage/coverage-summary.json)
+          PERCENT_FLOAT=$(jq ".total.$1.pct" coverage/coverage-summary.json)
+          PERCENT=$(printf "%.0f\n" $PERCENT_FLOAT)
           echo "##[set-output name=$1;]$PERCENT"
 
           if [ $PERCENT -lt 75 ]; then

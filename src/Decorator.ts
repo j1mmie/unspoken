@@ -1,4 +1,4 @@
-import * as Meta from './Meta'
+import { getParamsStore, getPropertyStore, TypeHint } from './Meta'
 
 function _getTypeHint(type:any) {
   const isArray = Array.isArray(type)
@@ -14,15 +14,30 @@ function _getTypeHint(type:any) {
   }
 }
 
-export function indexAt<T>(index:number, type?:([] | Meta.NewableAny | [Meta.NewableAny])):Meta.PropertyCallback {
-  return function(target:object, propertyKey:string):void {
-    const isArray = Array.isArray(type)
-    const store = Meta.getIndexStore(target)
+export function indexAt(index:number, typeHint?:TypeHint):(PropertyDecorator) {
+  return function(target:object, propertyKey:(string | symbol)):void {
+    const isArray = Array.isArray(typeHint)
+    const store = getPropertyStore(target)
 
     store[index] = {
+      propertyKey: propertyKey.toString(),
+      typeHint:   _getTypeHint(typeHint),
+      isArray:    isArray
+    }
+  }
+}
+
+export function indexed(typeHint?:TypeHint):ParameterDecorator {
+  // propertyKey is always undefined for ParameterDecorators. Its useless.
+  return function(target:any, propertyKey:(string | symbol), paramIndex:number):void {
+    const isArray = Array.isArray(typeHint)
+    const store = getParamsStore(target)
+
+    store[paramIndex] = {
+      paramIndex:  paramIndex,
       propertyKey: propertyKey,
-      typeHint: _getTypeHint(type),
-      isArray: isArray
+      typeHint:    _getTypeHint(typeHint),
+      isArray:     isArray
     }
   }
 }

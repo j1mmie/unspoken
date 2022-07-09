@@ -1,8 +1,8 @@
-import { getIndexingMetas, IndexAtMeta, Newable } from './Meta'
+import { getIndexingMetas, PropertyMeta, Newable, getParamsStore, PARAMS_KEY } from './Meta'
 
 export type PackedArray = (any[] | undefined)
 
-function _packArray<T extends object>(rootCtor:Newable<T>, arr:T[], parentMeta?:IndexAtMeta,):any[] {
+function _packArray<T extends object>(rootCtor:Newable<T>, arr:T[], parentMeta?:PropertyMeta,):any[] {
   if (!arr.length) return []
 
   const cachedMetas = getIndexingMetas(arr[0])
@@ -12,7 +12,7 @@ function _packArray<T extends object>(rootCtor:Newable<T>, arr:T[], parentMeta?:
   })
 }
 
-function _packProperty<T extends object>(rootCtor:Newable<T>, indexMeta:IndexAtMeta, value:(T | T[])):any {
+function _packProperty<T extends object>(rootCtor:Newable<T>, indexMeta:PropertyMeta, value:(T | T[])):any {
   if (value === undefined) {
     return undefined
   } else if (Array.isArray(value)) {
@@ -21,7 +21,7 @@ function _packProperty<T extends object>(rootCtor:Newable<T>, indexMeta:IndexAtM
     } else if (indexMeta.isArray && indexMeta.typeHint === undefined) {
       return value
     } else {
-      throw new Error(`Unspoken: In '${rootCtor.name}', property value for '${indexMeta.propertyKey}' is an array, but indexAt typeHint was not specified as an array '(indexAt(0, [MyClass]))'.`)
+      throw new Error(`Unspoken: In '${rootCtor.name}', property value for '${indexMeta.propertyKey}' is an array, but the typeHint was not specified as an array '(use "indexAt(0, [MyClass]))" for example'.`)
     }
   } else if (indexMeta.typeHint) {
     return _packObject(rootCtor, value, undefined, indexMeta)
@@ -30,7 +30,7 @@ function _packProperty<T extends object>(rootCtor:Newable<T>, indexMeta:IndexAtM
   }
 }
 
-function _packObject<T>(rootCtor:Newable<T>, obj:(T | number[] | string[] | boolean[]), cachedMetas?:IndexAtMeta[], parentPropMeta?:IndexAtMeta):PackedArray {
+function _packObject<T>(rootCtor:Newable<T>, obj:(T | number[] | string[] | boolean[]), cachedMetas?:PropertyMeta[], parentPropMeta?:PropertyMeta):PackedArray {
   if (obj === undefined) return undefined
 
   const presentObj = obj as unknown as object
@@ -57,6 +57,9 @@ function _packObject<T>(rootCtor:Newable<T>, obj:(T | number[] | string[] | bool
 
 export function pack<T>(ctor:Newable<T>, obj:T):PackedArray {
   if (obj === undefined) return undefined
+
+  const params = Reflect.getMetadata(PARAMS_KEY, ctor)
+  console.log(`constructor: ${JSON.stringify(params)}`)
 
   const indexMetas = getIndexingMetas(ctor.prototype)
 

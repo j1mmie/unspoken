@@ -18,21 +18,23 @@ Unspoken is designed to be used with other compression passes, like [MessagePack
 
 ## Table of Contents
 
-- [More Info](#more-info)
-  + [Compression results](#compression-results)
-  + [Compatibility with MessagePack](#compatibility-with-messagepack)
-- [Installation](#installation)
-- [Usage](#usage)
-  + [Importing](#importing)
-  + [Defining a schema](#defining-a-schema)
-    - [indexAt](#indexat)
-      * [indexAt Usage](#indexat-usage)
-      * [Examples](#examples)
-      * [Notes](#notes)
-  + [Packing](#packing)
-  + [Unpacking](#unpacking)
-  + [Partial Contracts](#partial-contracts)
-- [Quick Reference Example](#quick-reference-example)
+- [unspoken](#unspoken)
+  - [Table of Contents](#table-of-contents)
+  - [More Info](#more-info)
+    - [Compression results](#compression-results)
+    - [Compatibility with MessagePack](#compatibility-with-messagepack)
+  - [Installation](#installation)
+  - [Usage](#usage)
+    - [Importing](#importing)
+    - [Defining a schema](#defining-a-schema)
+      - [indexAt](#indexat)
+        - [indexAt Usage](#indexat-usage)
+        - [Examples](#examples)
+        - [Notes](#notes)
+    - [Packing](#packing)
+    - [Unpacking](#unpacking)
+    - [Partial Contracts](#partial-contracts)
+  - [Quick Reference Example](#quick-reference-example)
 
 
 ## More Info
@@ -61,15 +63,59 @@ Unspoken works perfectly with the [C# MessagePack library](https://github.com/ne
 ## Installation
 
 ```bash
-npm install --save-dev unspoken
+npm install unspoken
 ```
 
+Additionally, you'll need to make sure your tsconfig enables some features that are required for Unspoken. In your tsconfig file, enable the `experimentalDecorators` and `emitDecoratorMetadata` flags:
+
+```json
+"experimentalDecorators": true,
+"emitDecoratorMetadata": true,
+```
+
+Now you're ready to use Unspoken!
+
 ## Usage
+
+Quick example:
+
+```typescript
+
+class Genus {
+  constructor(
+    @indexAt(0) genus:string,
+    @indexAt(1) friendly:boolean
+  ) { }
+}
+
+class Animal {
+  constructor(
+    @indexAt(0, Genus) genus:Genus,
+    @indexAt(1)        name:string,
+    @indexAt(2)        age:number
+  ) { }
+}
+
+const puppy = new Animal(
+  new Genus('Canis', true),
+  'Oliver',
+  13
+)
+
+const packed = Unspoken.pack(Animal, puppy)
+const unpacked = Unspoken.unpack(Animal, packed)
+
+// The unpacked Animal object should be identical to the original Animal object
+// that was packed using Unspoken.pack
+expect(unpacked).toMatchObject(puppy)
+```
+
+General flow:
 
 1. Define schema contract using decorators
 2. Pack the data into an array
 3. (Optional) Compress it further using MessagePack, gzip, etc
-4. Uncompress / unpack the array back into the original object.
+4. Decompress / unpack the array back into the original object.
 
 ### Importing
 The 2 most common imports are:
@@ -206,7 +252,7 @@ const packedRequest = Unspoken.pack(LoginRequest, request)
 // Pretend we send it over the network. It gets received by another client below:
 
 const partial = Unspoken.unpack(Request, packedRequest)
-if (!partial) throw 'An error occured while parsing a request.'
+if (!partial) throw 'An error occurred while parsing a request.'
 
 switch (partial.method) {
   case 'login':
