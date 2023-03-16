@@ -1,5 +1,5 @@
 import { Unspoken, indexAt } from '../src'
-import * as TestClasses from './utils/TestClasses.test'
+import * as TestClasses from './utils/TestClasses'
 
 test('pack simple object', () => {
   const obj = new TestClasses.ClassSimple('Paul')

@@ -15,6 +15,15 @@ export class ClassSimpleUndefinable {
     this.name = name
   }
 }
+
+export class ClassSimpleUndefinableArray {
+  @indexAt(0) names?:string[]
+
+  constructor(names?:string[]) {
+    this.names = names
+  }
+}
+
 export class ClassChild {
   @indexAt(0) name:string
   @indexAt(1) age:number

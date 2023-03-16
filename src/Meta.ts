@@ -1,3 +1,5 @@
+import { PackableObject } from './Pack'
+
 const METADATA_KEY = Symbol('unspoken:index')
 
 export type PropertyCallback = {(target:object, propertyKey:string):void}
@@ -31,7 +33,9 @@ export function getIndexStore(target:object) {
   return store
 }
 
-export function getIndexingMetas(origin:Object):IndexAtMeta[] {
+export function getIndexingMetas(origin:PackableObject):IndexAtMeta[] {
+  if (!origin) return []
+
   // This function returns metadata about which fields are
   // indexed on an object, and in which order.
 

@@ -1,7 +1,9 @@
 import { getIndexingMetas, IndexAtMeta, Newable } from './Meta'
-import { PackedArray } from './Pack'
+import { PackableObject, PackedArray } from './Pack'
 
 function _unpackProp<T>(rootCtor:Newable<T>, indexMeta:IndexAtMeta, value:any):any {
+  if (value === undefined || value === null) return undefined
+
   if (indexMeta.isArray && indexMeta.typeHint) {
     return value.map((_:any) => unpack(indexMeta.typeHint!, _))
   } else if (indexMeta.typeHint) {
@@ -11,14 +13,13 @@ function _unpackProp<T>(rootCtor:Newable<T>, indexMeta:IndexAtMeta, value:any):a
   }
 }
 
-function _unpackArray<T>(rootCtor:Newable<T>, currentCtor:Newable<T>, array:(any[] | null | PackedArray)):(T | undefined) {
-  if (array === null) return undefined
-
+function _unpackArray<T extends {}>(rootCtor:Newable<T>, currentCtor:Newable<T>, array:(any[] | PackedArray)):(T | undefined) {
   if (!Array.isArray(array)) {
     throw new Error(`Unspoken: In ${rootCtor.name}, expected array at ${currentCtor.name}. Got: ${JSON.stringify(array)}`)
   }
 
   const target = Reflect.construct(currentCtor, [])
+
   const indexMetas = getIndexingMetas(target)
 
   for (let i = 0; i < indexMetas.length; i++) {
@@ -26,13 +27,14 @@ function _unpackArray<T>(rootCtor:Newable<T>, currentCtor:Newable<T>, array:(any
     Reflect.set(target, indexMetas[i].propertyKey, value)
   }
 
-  return target as T
+  return target
 }
 
-export function unpack<T>(rootCtor:Newable<T>, array:(any[] | null | PackedArray)):(T | undefined) {
+export function unpack<T extends {}>(rootCtor:Newable<T>, array:(any[] | null | undefined | PackedArray)):(T | undefined) {
+  if (!array) return undefined
   return _unpackArray(rootCtor, rootCtor, array)
 }
 
-export function unpackIndex<T>(rootCtor:Newable<T>, array:any[], index:number):(T | undefined) {
+export function unpackIndex<T extends {}>(rootCtor:Newable<T>, array:any[], index:number):(T | undefined) {
   return _unpackArray(rootCtor, rootCtor, array[index])
 }

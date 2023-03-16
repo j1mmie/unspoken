@@ -1,5 +1,6 @@
 import { Unspoken, indexAt } from '../src'
-import * as TestClasses from './utils/TestClasses.test'
+import { unpack, unpackIndex } from '../src/Unpack'
+import * as TestClasses from './utils/TestClasses'
 
 test('unpack simple object', () => {
   const unpacked = Unspoken.unpack(TestClasses.ClassSimple, ['Paul'])
@@ -19,6 +20,22 @@ test('unpack object with child property', () => {
   const expected = new TestClasses.ClassWithChild('John',
     new TestClasses.ClassChild('Julian', 9),
   )
+
+  expect(unpacked).toMatchObject(expected)
+})
+
+test('unpack object with undefined property', () => {
+  const unpacked = Unspoken.unpack(TestClasses.ClassSimpleUndefinable, [undefined])
+
+  const expected = new TestClasses.ClassSimpleUndefinable(undefined)
+
+  expect(unpacked).toMatchObject(expected)
+})
+
+test('unpack object with undefined array property', () => {
+  const unpacked = Unspoken.unpack(TestClasses.ClassSimpleUndefinableArray, [undefined])
+
+  const expected = new TestClasses.ClassSimpleUndefinableArray(undefined)
 
   expect(unpacked).toMatchObject(expected)
 })
@@ -84,3 +101,7 @@ test('unpack throws when field annotated as array is not actually an array', () 
   }).toThrow()
 })
 
+test('unpack undefined returns undefined', () => {
+  const unpacked = unpack(Array, undefined)
+  expect(unpacked).toEqual(undefined)
+})
