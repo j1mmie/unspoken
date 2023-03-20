@@ -79,6 +79,7 @@ jobs:
 
     - name: 'Coverage Badge: Lines'
       uses: schneegans/dynamic-badges-action@v1.1.0
+      if: github.ref == 'refs/heads/main'
       with:
         auth: ${{ secrets.GIST_TOKEN }}
         gistID: 17ea5fefe3b3fc7fe430382821173e13
@@ -90,6 +91,7 @@ jobs:
 
     - name: 'Coverage Badge: Statements'
       uses: schneegans/dynamic-badges-action@v1.1.0
+      if: github.ref == 'refs/heads/main'
       with:
         auth: ${{ secrets.GIST_TOKEN }}
         gistID: 17ea5fefe3b3fc7fe430382821173e13
@@ -101,6 +103,7 @@ jobs:
 
     - name: 'Coverage Badge: Functions'
       uses: schneegans/dynamic-badges-action@v1.1.0
+      if: github.ref == 'refs/heads/main'
       with:
         auth: ${{ secrets.GIST_TOKEN }}
         gistID: 17ea5fefe3b3fc7fe430382821173e13
@@ -112,6 +115,7 @@ jobs:
 
     - name: 'Coverage Badge: Branches'
       uses: schneegans/dynamic-badges-action@v1.1.0
+      if: github.ref == 'refs/heads/main'
       with:
         auth: ${{ secrets.GIST_TOKEN }}
         gistID: 17ea5fefe3b3fc7fe430382821173e13
