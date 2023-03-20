@@ -2,17 +2,15 @@
 
 ![image](https://user-images.githubusercontent.com/4650220/148303626-d1e525c7-6305-4438-82a7-9e9489b1664c.png)
 
-Pack network messages more efficiently. Compress keyed objects into keyless arrays. Decompress arrays back into usable objects.
+Pack network messages more efficiently. Compress keyed objects into indexed arrays. Decompress arrays back into usable objects. Unspoken is compatible with [MessagePack-CSharp](https://github.com/neuecc/MessagePack-CSharp)'s [Contractless Resolvers](https://github.com/neuecc/MessagePack-CSharp#use-indexed-keys-instead-of-string-keys-contractless)
 
-Unspoken makes MessagePack more efficient than Protobufs, and it's easier to use. No compilers or generated code required.
+Unspoken w/ MessagePack is more space efficient than Protobufs, and it's easier to use. No compilers or generated code required.
 
 It's particularly useful when de/serializing data for quick network messages, like in multiplayer games and other socket-server applications.
 
 A naïve client + server would communicate using whole JSON objects, including keys. The keys provide context, essentially sending the "schema", or "contract", over the wire too. But if the recipient already knows the context, then let it remain an unspoken agreement, and just send the important stuff.
 
-This is the opposite of a "contractless" approach. A contractless serializer would transmit schema over the wire.
-
-Unspoken is designed to be used with other compression passes, like [MessagePack](https://github.com/msgpack) or [Gzip](https://www.npmjs.com/package/node-gzip)
+Unspoken works best when paired with an other encoding or compression layer, like [MessagePack](https://github.com/msgpack) or [Gzip](https://www.npmjs.com/package/node-gzip)
 
 ![Branches Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/j1mmie/17ea5fefe3b3fc7fe430382821173e13/raw/unspoken-main_branches.json) ![Lines Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/j1mmie/17ea5fefe3b3fc7fe430382821173e13/raw/unspoken-main_lines.json) ![Functions Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/j1mmie/17ea5fefe3b3fc7fe430382821173e13/raw/unspoken-main_functions.json) ![Statements Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/j1mmie/17ea5fefe3b3fc7fe430382821173e13/raw/unspoken-main_statements.json)
 
