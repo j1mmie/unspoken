@@ -4,7 +4,7 @@
 
 Pack network messages more efficiently. Compress keyed objects into indexed arrays. Decompress arrays back into usable objects. Unspoken is compatible with [MessagePack-CSharp](https://github.com/neuecc/MessagePack-CSharp)'s [Contractless Resolvers](https://github.com/neuecc/MessagePack-CSharp#use-indexed-keys-instead-of-string-keys-contractless)
 
-Unspoken w/ MessagePack is more space efficient than Protobufs, and it's easier to use. No compilers or generated code required.
+Unspoken w/ MessagePack is a low-dependency, space efficient alternative to Protobufs, and it's easy to use. No compilers, transformers, or code generators required.
 
 It's particularly useful when de/serializing data for quick network messages, like in multiplayer games and other socket-server applications.
 
@@ -75,6 +75,10 @@ The 2 most common imports are:
 ```typescript
 import { Unspoken, indexAt } from 'unspoken'
 ```
+
+### Dependencies
+
+Unspoken has a single dependency - [reflect-metadata v0.1.12](https://github.com/rbuckton/reflect-metadata), a widely used Javascript reflection framework with a [formal spec](https://rbuckton.github.io/reflect-metadata/)
 
 ### Defining a schema
 
